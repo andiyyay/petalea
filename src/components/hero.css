@@ -1,5 +1,5 @@
 .hero {
-  height: 85vh;
+  height: 100vh;
   background-image: url("/hero.png");
   background-size: cover;
   background-position: center;
@@ -26,13 +26,13 @@
 }
 
 .hero-content h1 {
-  font-size: 56px;
+  font-size: 58px;
   line-height: 1.2;
   margin-bottom: 16px;
 }
 
 .hero-content p {
-  font-size: 18px;
+  font-size: 24px;
   margin-bottom: 28px;
 }
 
