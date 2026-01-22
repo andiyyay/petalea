@@ -16,7 +16,7 @@
   display: flex;
   list-style: none;
   gap: 32px;
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .nav-menu li {
@@ -27,7 +27,7 @@
   display: flex;
   align-items: center;
   gap: 20px;
-  font-size: 16px;
+  font-size: 23px;
 }
 
 .login {

@@ -6,8 +6,8 @@ function Navbar() {
       <div className="logo">Petaléa</div>
 
       <ul className="nav-menu">
-        <li>Shop</li>
-        <li>About</li>
+        <li><a href="#shop">Shop</a> </li>
+        <li><a href="#about">About</a></li>
       </ul>
 
       <div className="nav-icons">
