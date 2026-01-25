@@ -8,7 +8,7 @@ function Hero() {
           Fresh Flowers, Delivered <br /> Daily
         </h1>
         <p>Hand-picked arrangements for every occasion</p>
-        <button>Shop Now</button>
+        <button><a href="#shop">Shop Now</a></button>
       </div>
     </section>
   );

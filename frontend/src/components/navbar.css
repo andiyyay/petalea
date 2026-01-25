@@ -19,6 +19,18 @@
   font-size: 18px;
 }
 
+.nav-menu a {
+  color: #000;              /* awal hitam */
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.25s ease;
+}
+
+.nav-menu a:hover {
+  color: #e11d48;           /* merah/pink pas hover */
+}
+
+
 .nav-menu li {
   cursor: pointer;
 }
@@ -26,11 +38,50 @@
 .nav-icons {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 25px;
   font-size: 23px;
-}
-
-.login {
-  color: #e91e63;
   cursor: pointer;
 }
+.nav-icons span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.love {
+  font-size: 28px;
+  transform: translateY(-1px); /* halus sejajar */
+}
+
+
+.nav-icons  {
+  color: #000;              /* awal hitam */
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.25s ease;
+}
+
+.nav-icons :hover {
+  color: #e11d48;           /* merah/pink pas hover */
+}
+
+
+.login {
+  display: flex;
+  align-items: center;
+  gap : 6px;
+  color: #e91e63;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.25s ease;
+}
+
+.login svg {
+  display: block;
+}
+
+.login:hover {
+    background-color: rgba(225, 29, 72, 0.12);
+}
+
