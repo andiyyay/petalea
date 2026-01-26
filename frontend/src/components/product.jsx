@@ -2,7 +2,10 @@ import "../styles/product.css";
 
 export default function ProductCard({ product }) {
   return (
-    <div className="product-card">
+    <div
+      id={`product-${product.id}`}
+      className="product-card"
+    >
       <img src={product.image} alt={product.name} />
 
       <div className="product-info">
