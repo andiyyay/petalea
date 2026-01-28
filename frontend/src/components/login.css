@@ -68,3 +68,10 @@
   color: #e6005c;
   cursor: pointer;
 }
+
+.error {
+  color: red;
+  margin: 8px 0;
+  font-size: 14px;
+}
+
