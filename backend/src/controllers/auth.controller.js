@@ -13,6 +13,17 @@ exports.login = (req, res) => {
     });
   }
 
+    if (email === "a@gmail.com" && password === "123") {
+    return res.json({
+      success: true,
+      message: "Login berhasil",
+      user: {
+        email,
+        name: "Andiya"
+      }
+    });
+  }
+
   return res.status(401).json({
     success: false,
     message: "Email atau password salah"

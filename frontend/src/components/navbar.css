@@ -85,3 +85,53 @@
     background-color: rgba(225, 29, 72, 0.12);
 }
 
+.user-area {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ffe3ec;
+  color: #e6005c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.logout {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 30px;
+}
+
+.user-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  background: #ffe6ef;
+  color: #e6005c;
+  border-radius: 50%;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logout {
+  cursor: pointer;
+}
+
+.logout:hover {
+  color: #e6005c;
+}

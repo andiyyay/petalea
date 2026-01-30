@@ -48,12 +48,12 @@ export default function Footer() {
 
       <div className="footer-bottom">
         <p>Follow us on Instagram</p>
-        <a href="https://www.instagram.com/a.ndiyya/" target="_blank" rel="noopener noreferrer" 
+        <a href="https://www.instagram.com/petaleaatelier" target="_blank" rel="noopener noreferrer" 
         className="ig-wrapper">
             <div className="ig-circle">
             <FaInstagram className="ig-icon" />
           </div>
-          <span>@a.ndiyya</span>
+          <span>@petaleaatelier</span>
         </a>
         
         <small>© 2026 Petaléa. All rights reserved.</small>

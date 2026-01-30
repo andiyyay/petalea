@@ -2,73 +2,57 @@ import { useState } from "react";
 import axios from "axios";
 import "./login.css";
 
-function Login({ onClose }) {
+function Login({ onClose, onLoginSuccess }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-
+  const handleLogin = async () => {
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        {
-          email,
-          password,
-        }
-      );
+      const res = await axios.post("http://localhost:5000/api/auth/login", {
+        email,
+        password,
+      });
 
-      
-      console.log("Login sukses:", res.data);
-
-      alert("Login berhasil");
-      onClose(); 
+      // kirim user ke App.jsx
+      onLoginSuccess(res.data.user);
     } catch (err) {
-      setError(
-        err.response?.data?.message || "Login gagal, silahkan coba lagi"
-      );
+      setError("Email atau password salah");
     }
   };
 
   return (
-    <div className="login-overlay">
-      <div className="login-modal">
-        <button className="close-btn" onClick={onClose}>✕</button>
+    <div className="login-modal">
+      <button className="close-btn" onClick={onClose}>✕</button>
 
-        <h2>Masuk ke Petaléa</h2>
-        <p>Login untuk melanjutkan belanja</p>
+      <h2>Masuk ke Petaléa</h2>
+      <p>Login untuk melanjutkan belanja</p>
 
-        <form onSubmit={handleLogin}>
-          <label>Email</label>
-          <input
-            type="email"
-            placeholder="Masukkan email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+      {error && <p className="error">{error}</p>}
 
-          <label>Password</label>
-          <input
-            type="password"
-            placeholder="Masukkan password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+      <label>Email</label>
+      <input
+        type="email"
+        placeholder="Masukkan email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
 
-          {error && <p className="error">{error}</p>}
+      <label>Password</label>
+      <input
+        type="password"
+        placeholder="Masukkan password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
 
-          <button className="btn-login" type="submit">
-            Masuk
-          </button>
-        </form>
+      <button className="btn-login" onClick={handleLogin}>
+        Masuk
+      </button>
 
-        <p className="register">
-          Belum punya akun? <span>Daftar di sini</span>
-        </p>
-      </div>
+      <p className="register">
+        Belum punya akun? <span>Daftar di sini</span>
+      </p>
     </div>
   );
 }
