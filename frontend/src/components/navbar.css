@@ -1,0 +1,137 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 64px;
+  background: white;
+}
+
+.logo {
+  font-size: 26px;
+  font-weight: bold;
+  color: #e91e63;
+}
+
+.nav-menu {
+  display: flex;
+  list-style: none;
+  gap: 32px;
+  font-size: 18px;
+}
+
+.nav-menu a {
+  color: #000;              /* awal hitam */
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.25s ease;
+}
+
+.nav-menu a:hover {
+  color: #e11d48;           /* merah/pink pas hover */
+}
+
+
+.nav-menu li {
+  cursor: pointer;
+}
+
+.nav-icons {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  font-size: 23px;
+  cursor: pointer;
+}
+.nav-icons span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.love {
+  font-size: 28px;
+  transform: translateY(-1px); /* halus sejajar */
+}
+
+
+.nav-icons  {
+  color: #000;              /* awal hitam */
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.25s ease;
+}
+
+.nav-icons :hover {
+  color: #e11d48;           /* merah/pink pas hover */
+}
+
+
+.login {
+  display: flex;
+  align-items: center;
+  gap : 6px;
+  color: #e91e63;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.25s ease;
+}
+
+.login svg {
+  display: block;
+}
+
+.login:hover {
+    background-color: rgba(225, 29, 72, 0.12);
+}
+
+.user-area {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ffe3ec;
+  color: #e6005c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.logout {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 30px;
+}
+
+.user-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  background: #ffe6ef;
+  color: #e6005c;
+  border-radius: 50%;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logout {
+  cursor: pointer;
+}
+
+.logout:hover {
+  color: #e6005c;
+}
