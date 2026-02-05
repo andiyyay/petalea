@@ -1,13 +1,15 @@
 import "./riwayat.css";
 
-function RiwayatPesanan() {
+function RiwayatPesanan({ onClose }) {
   const orders = [];
 
   return (
     <div className="riwayat-container">
       <div className="riwayat-header">
         <h2>Riwayat Pesanan</h2>
-        <button className="btn-close">Tutup</button>
+        <button className="btn-close" onClick={onClose}>
+          Kembali
+        </button>
       </div>
 
       {orders.length === 0 && (
