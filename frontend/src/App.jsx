@@ -6,6 +6,7 @@ import Catalog from "./components/catalog";
 import Banner from "./components/banner";
 import Footer from "./components/footer";
 import Login from "./components/login";
+import RiwayatPesanan from "./components/riwayat";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -38,6 +39,7 @@ function App() {
       <Catalog />
       <Banner />
       <Footer />
+      <RiwayatPesanan />
     </>
   );
 }
