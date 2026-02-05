@@ -11,9 +11,11 @@ import RiwayatPesanan from "./components/riwayat";
 function App() {
   const [user, setUser] = useState(null);
   const [showLogin, setShowLogin] = useState(false);
+  const [page, setPage] = useState("home"); // ⬅️ NAVIGASI
 
   const handleLogout = () => {
     setUser(null);
+    setPage("home");
   };
 
   return (
@@ -22,6 +24,8 @@ function App() {
         user={user}
         onLoginClick={() => setShowLogin(true)}
         onLogout={handleLogout}
+        onRiwayatClick={() => setPage("riwayat")}
+        onHomeClick={() => setPage("home")}
       />
 
       {showLogin && (
@@ -34,12 +38,21 @@ function App() {
         />
       )}
 
-      <Home />
-      <About />
-      <Catalog />
-      <Banner />
-      <Footer />
-      <RiwayatPesanan />
+      {/* ===== HALAMAN HOME ===== */}
+      {page === "home" && (
+        <>
+          <Home />
+          <About />
+          <Catalog />
+          <Banner />
+          <Footer />
+        </>
+      )}
+
+      {/* ===== HALAMAN RIWAYAT ===== */}
+      {page === "riwayat" && (
+        <RiwayatPesanan onClose={() => setPage("home")} />
+      )}
     </>
   );
 }
