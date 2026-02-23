@@ -6,16 +6,25 @@ import Catalog from "./components/catalog";
 import Banner from "./components/banner";
 import Footer from "./components/footer";
 import Login from "./components/login";
-import RiwayatPesanan from "./components/riwayat";
+import Register from "./components/register";
 
 function App() {
   const [user, setUser] = useState(null);
   const [showLogin, setShowLogin] = useState(false);
-  const [page, setPage] = useState("home"); // ⬅️ NAVIGASI
+  const [showRegister, setShowRegister] = useState(false);
+
+  const randomNames = ["Andi", "Budi", "Citra", "Dina", "Eka"];
+
+  const handleLogin = () => {
+    const randomName =
+      randomNames[Math.floor(Math.random() * randomNames.length)];
+
+    setUser({ name: randomName });
+    setShowLogin(false);
+  };
 
   const handleLogout = () => {
     setUser(null);
-    setPage("home");
   };
 
   return (
@@ -24,8 +33,6 @@ function App() {
         user={user}
         onLoginClick={() => setShowLogin(true)}
         onLogout={handleLogout}
-        onRiwayatClick={() => setPage("riwayat")}
-        onHomeClick={() => setPage("home")}
       />
 
       {showLogin && (
@@ -35,24 +42,29 @@ function App() {
             setUser(userData);
             setShowLogin(false);
           }}
+          onRandomLogin={handleLogin}
+          onSwitchToRegister={() => {
+            setShowLogin(false);
+            setShowRegister(true);
+          }}
         />
       )}
 
-      {/* ===== HALAMAN HOME ===== */}
-      {page === "home" && (
-        <>
-          <Home />
-          <About />
-          <Catalog />
-          <Banner />
-          <Footer />
-        </>
+      {showRegister && (
+        <Register
+          onClose={() => setShowRegister(false)}
+          onSwitchToLogin={() => {
+            setShowRegister(false);
+            setShowLogin(true);
+          }}
+        />
       )}
 
-      {/* ===== HALAMAN RIWAYAT ===== */}
-      {page === "riwayat" && (
-        <RiwayatPesanan onClose={() => setPage("home")} />
-      )}
+      <Home />
+      <About />
+      <Catalog />
+      <Banner />
+      <Footer />
     </>
   );
 }

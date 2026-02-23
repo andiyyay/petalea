@@ -20,14 +20,14 @@
 }
 
 .nav-menu a {
-  color: #000;              /* awal hitam */
+  color: #000;              
   text-decoration: none;
   font-weight: 500;
   transition: color 0.25s ease;
 }
 
 .nav-menu a:hover {
-  color: #e11d48;           /* merah/pink pas hover */
+  color: #e11d48;           
 }
 
 
@@ -38,7 +38,7 @@
 .nav-icons {
   display: flex;
   align-items: center;
-  gap: 25px;
+  gap: 18px;
   font-size: 23px;
   cursor: pointer;
 }
@@ -49,21 +49,17 @@
   line-height: 1;
 }
 
-.love {
-  font-size: 28px;
-  transform: translateY(-1px); /* halus sejajar */
-}
 
 
 .nav-icons  {
-  color: #000;              /* awal hitam */
+  color: #000;             
   text-decoration: none;
   font-weight: 500;
   transition: color 0.25s ease;
 }
 
 .nav-icons :hover {
-  color: #e11d48;           /* merah/pink pas hover */
+  color: #e11d48;           
 }
 
 
@@ -113,7 +109,7 @@
 .user-area {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 19px;
 }
 
 .user-avatar {
