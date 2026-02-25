@@ -1,8 +1,51 @@
-# React + Vite
+# Petaléa 🌸
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Web toko bunga online — bouquet & rangkaian bunga segar.
 
-Currently, two official plugins are available:
+## Stack
+
+| Layer | Teknologi |
+|---|---|
+| Frontend | React 19 + Vite |
+| Backend | Laravel 12 (API) |
+| Auth | Laravel Sanctum (token-based) |
+| Database | MySQL |
+
+## Struktur
+
+```
+petalea/
+  backend/    ← Laravel 12 REST API
+  frontend/   ← React 19 + Vite SPA
+```
+
+## Menjalankan lokal
+
+**Backend**
+```bash
+cd backend
+composer install
+cp .env.example .env
+php artisan key:generate
+# isi DB_* di .env, lalu:
+php artisan migrate --seed
+php artisan serve --port=5000
+```
+
+**Frontend**
+```bash
+cd frontend
+npm install
+npm run dev   # http://localhost:5173
+```
+
+## Akun test
+
+| Email | Password |
+|---|---|
+| test@gmail.com | 123456 |
+| a@gmail.com | a |
+
 
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
