@@ -1,12 +1,8 @@
 import { useState } from "react";
 import Navbar from "./components/navbar";
 import Home from "./pages/home";
-import About from "./components/about";
-import Catalog from "./components/catalog";
-import Banner from "./components/banner";
-import Footer from "./components/footer";
-import Login from "./components/login";
-import Register from "./components/register";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -61,10 +57,6 @@ function App() {
       )}
 
       <Home />
-      <About />
-      <Catalog />
-      <Banner />
-      <Footer />
     </>
   );
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../services/api";
 
 function Login({ onClose, onLoginSuccess, onSwitchToRegister }) {
   const [email, setEmail] = useState("");
@@ -17,10 +17,14 @@ function Login({ onClose, onLoginSuccess, onSwitchToRegister }) {
       setLoading(true);
       setError("");
 
-      const res = await axios.post("http://localhost:8000/api/auth/login", {
+      const res = await api.post("/auth/login", {
         email,
         password,
       });
+
+      if (res.data.token) {
+        localStorage.setItem("token", res.data.token);
+      }
 
       const userData = {
         ...res.data.user,
