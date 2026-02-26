@@ -1,7 +1,7 @@
 import { useState } from "react";
 import api from "../services/api";
 
-function Register({ onClose, onSwitchToLogin }) {
+function Register({ onClose, onSwitchToLogin, onRegisterSuccess }) {
   const [form, setForm] = useState({
     username: "",
     email: "",
@@ -26,13 +26,23 @@ function Register({ onClose, onSwitchToLogin }) {
 
     try {
       setLoading(true);
-      await api.post("/auth/register", {
+      const res = await api.post("/auth/register", {
         name: form.username,
         email: form.email,
         password: form.password,
+        password_confirmation: form.confirmPassword,
       });
-      alert("Akun berhasil dibuat! Silakan login.");
-      onSwitchToLogin();
+
+      if (res.data.token) {
+        localStorage.setItem("token", res.data.token);
+      }
+
+      if (onRegisterSuccess) {
+        onRegisterSuccess(res.data.user);
+      } else {
+        alert("Akun berhasil dibuat! Silakan login.");
+        onSwitchToLogin();
+      }
     } catch (err) {
       const msg = err.response?.data?.errors?.email?.[0]
         || err.response?.data?.message
@@ -109,7 +119,7 @@ function Register({ onClose, onSwitchToLogin }) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 bg-[#ff004f] text-white border-none rounded-lg font-bold cursor-pointer hover:bg-[#e60045] transition-colors duration-200 disabled:opacity-60"
+            className="w-full py-3 bg-[#ff004f] text-white border-none rounded-lg font-bold cursor-pointer hover:bg-[#e60045] transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {loading ? "Loading..." : "Daftar"}
           </button>

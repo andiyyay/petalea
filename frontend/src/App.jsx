@@ -53,6 +53,10 @@ function App() {
             setShowRegister(false);
             setShowLogin(true);
           }}
+          onRegisterSuccess={(userData) => {
+            setUser(userData);
+            setShowRegister(false);
+          }}
         />
       )}
 
