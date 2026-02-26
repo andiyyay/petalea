@@ -1,6 +1,5 @@
 import { useState } from "react";
 import axios from "axios";
-import "./login.css";
 
 function Login({ onClose, onLoginSuccess, onSwitchToRegister }) {
   const [email, setEmail] = useState("");
@@ -23,7 +22,6 @@ function Login({ onClose, onLoginSuccess, onSwitchToRegister }) {
         password,
       });
 
-      // Pastikan user punya name / username untuk avatar
       const userData = {
         ...res.data.user,
         name:
@@ -42,24 +40,27 @@ function Login({ onClose, onLoginSuccess, onSwitchToRegister }) {
     }
   };
 
-  // tekan Enter = login
   const handleKeyDown = (e) => {
     if (e.key === "Enter") handleLogin();
   };
 
   return (
-    <div className="login-modal">
-      <button className="close-btn" onClick={onClose}>
+    <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white w-[920px] p-[42px] rounded-[20px] shadow-[0_20px_50px_rgba(0,0,0,0.2)] z-[9999]">
+      <button
+        className="absolute top-4 right-4 bg-transparent border-none text-[22px] cursor-pointer"
+        onClick={onClose}
+      >
         ✕
       </button>
 
-      <h2>Masuk ke Petaléa</h2>
-      <p>Login untuk melanjutkan belanja</p>
+      <h2 className="text-center mb-4">Masuk ke Petaléa</h2>
+      <p className="text-center text-[#555] mb-6 text-[17px]">Login untuk melanjutkan belanja</p>
 
-      {error && <p className="error">{error}</p>}
+      {error && <p className="text-red-500 my-2 text-sm">{error}</p>}
 
-      <label>Email</label>
+      <label className="block pt-4 pb-2 mb-3 font-semibold">Email</label>
       <input
+        className="w-full p-3.5 rounded-[10px] border border-[#ddd] mb-[18px] outline-none focus:border-[#e6005c]"
         type="email"
         placeholder="Masukkan email"
         value={email}
@@ -67,8 +68,9 @@ function Login({ onClose, onLoginSuccess, onSwitchToRegister }) {
         onKeyDown={handleKeyDown}
       />
 
-      <label>Password</label>
+      <label className="block pt-4 pb-2 mb-3 font-semibold">Password</label>
       <input
+        className="w-full p-3.5 rounded-[10px] border border-[#ddd] mb-[18px] outline-none focus:border-[#e6005c]"
         type="password"
         placeholder="Masukkan password"
         value={password}
@@ -77,16 +79,19 @@ function Login({ onClose, onLoginSuccess, onSwitchToRegister }) {
       />
 
       <button
-        className="btn-login"
+        className="w-full p-3.5 mb-5 bg-[#e6005c] text-white border-none rounded-xl text-base cursor-pointer hover:bg-[#cc0052] transition-colors duration-300 disabled:opacity-60"
         onClick={handleLogin}
         disabled={loading}
       >
         {loading ? "Loading..." : "Masuk"}
       </button>
 
-      <p className="register">
+      <p className="text-center text-[#555]">
         Belum punya akun?{" "}
-        <span onClick={onSwitchToRegister} style={{ cursor: "pointer" }}>
+        <span
+          className="text-[#e6005c] cursor-pointer font-medium"
+          onClick={onSwitchToRegister}
+        >
           Daftar di sini
         </span>
       </p>

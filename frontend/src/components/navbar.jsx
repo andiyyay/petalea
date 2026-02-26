@@ -1,5 +1,3 @@
-import "./Navbar.css";
-
 function Navbar({ user, onLoginClick, onLogout }) {
   const getInitial = (name) => {
     if (!name) return "";
@@ -11,25 +9,42 @@ function Navbar({ user, onLoginClick, onLogout }) {
   const initial = getInitial(user?.name);
 
   return (
-    <nav className="navbar">
-      <div className="logo">Petaléa</div>
+    <nav className="flex items-center justify-between px-16 py-5 bg-white">
+      <div className="text-[26px] font-bold text-[#e91e63]">Petaléa</div>
 
-      <ul className="nav-menu">
-        <li><a href="#shop">Shop</a></li>
-        <li><a href="#about">About</a></li>
-
+      <ul className="flex list-none gap-8 text-lg">
+        <li>
+          <a href="#shop" className="text-black no-underline font-medium hover:text-[#e11d48] transition-colors duration-300">
+            Shop
+          </a>
+        </li>
+        <li>
+          <a href="#about" className="text-black no-underline font-medium hover:text-[#e11d48] transition-colors duration-300">
+            About
+          </a>
+        </li>
         {user && (
           <>
-            <li><a href="#status">Status Pesanan</a></li>
-            <li><a href="#riwayat">Riwayat Pemesanan</a></li>
+            <li>
+              <a href="#status" className="text-black no-underline font-medium hover:text-[#e11d48] transition-colors duration-300">
+                Status Pesanan
+              </a>
+            </li>
+            <li>
+              <a href="#riwayat" className="text-black no-underline font-medium hover:text-[#e11d48] transition-colors duration-300">
+                Riwayat Pemesanan
+              </a>
+            </li>
           </>
         )}
       </ul>
 
-      <div className="nav-icons">
-
+      <div className="flex items-center gap-[18px]">
         {!user && (
-          <span className="login" onClick={onLoginClick}>
+          <span
+            className="flex items-center gap-1.5 text-[#e91e63] cursor-pointer font-medium rounded px-2 py-1 hover:bg-pink-50 transition-colors duration-300"
+            onClick={onLoginClick}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="22"
@@ -49,10 +64,15 @@ function Navbar({ user, onLoginClick, onLogout }) {
         )}
 
         {user && (
-          <div className="user-area">
-            <div className="user-avatar">{initial}</div>
-
-            <span className="logout" onClick={onLogout} title="Logout">
+          <div className="flex items-center gap-5">
+            <div className="w-8 h-8 bg-[#ffe6ef] text-[#e6005c] rounded-full font-bold flex items-center justify-center text-sm">
+              {initial}
+            </div>
+            <span
+              className="cursor-pointer hover:text-[#e6005c] transition-colors duration-300"
+              onClick={onLogout}
+              title="Logout"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="22"
@@ -72,9 +92,10 @@ function Navbar({ user, onLoginClick, onLogout }) {
           </div>
         )}
 
-        
-
-        <span onClick={!user ? onLoginClick : undefined}>
+        <span
+          className="flex items-center justify-center cursor-pointer hover:text-[#e11d48] transition-colors duration-300"
+          onClick={!user ? onLoginClick : undefined}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="22"
@@ -91,7 +112,6 @@ function Navbar({ user, onLoginClick, onLogout }) {
             <path d="M1 1h4l2.6 13h11.4l2-8H6" />
           </svg>
         </span>
-
       </div>
     </nav>
   );
