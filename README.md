@@ -60,7 +60,7 @@ Buat database, lalu jalankan migrasi:
 mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS florist_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 php artisan migrate --seed
 php artisan storage:link
-php artisan serve --port=5000
+php artisan serve
 ```
 
 ### 3. Frontend (React)

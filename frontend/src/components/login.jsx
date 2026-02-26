@@ -18,7 +18,7 @@ function Login({ onClose, onLoginSuccess, onSwitchToRegister }) {
       setLoading(true);
       setError("");
 
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
+      const res = await axios.post("http://localhost:8000/api/auth/login", {
         email,
         password,
       });
