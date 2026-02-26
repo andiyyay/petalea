@@ -1,8 +1,8 @@
 import { useState } from "react";
 import Navbar from "./components/navbar";
 import Home from "./pages/home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import Login from "./pages/login";
+import Register from "./pages/register";
 
 function App() {
   const [user, setUser] = useState(null);
