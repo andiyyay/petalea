@@ -1,27 +1,56 @@
 import { useState } from "react";
+import api from "../services/api";
 
-function Register({ onClose, onSwitchToLogin }) {
+function Register({ onClose, onSwitchToLogin, onRegisterSuccess }) {
   const [form, setForm] = useState({
     username: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
 
     if (form.password !== form.confirmPassword) {
-      alert("Password tidak sama!");
+      setError("Password tidak sama!");
       return;
     }
 
-    alert("Akun berhasil dibuat");
-    onClose();
+    try {
+      setLoading(true);
+      const res = await api.post("/auth/register", {
+        name: form.username,
+        email: form.email,
+        password: form.password,
+        password_confirmation: form.confirmPassword,
+      });
+
+      if (res.data.token) {
+        localStorage.setItem("token", res.data.token);
+      }
+
+      if (onRegisterSuccess) {
+        onRegisterSuccess(res.data.user);
+      } else {
+        alert("Akun berhasil dibuat! Silakan login.");
+        onSwitchToLogin();
+      }
+    } catch (err) {
+      const msg = err.response?.data?.errors?.email?.[0]
+        || err.response?.data?.message
+        || "Gagal membuat akun, coba lagi";
+      setError(msg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const inputClass =
@@ -39,6 +68,8 @@ function Register({ onClose, onSwitchToLogin }) {
 
         <h2 className="mb-2.5 text-2xl">Daftar Akun</h2>
         <p className="text-[#777] mb-6">Buat akun untuk mulai berbelanja</p>
+
+        {error && <p className="text-red-500 mb-4 text-sm">{error}</p>}
 
         <form className="text-left" onSubmit={handleSubmit}>
           <label className="text-base font-medium">Username</label>
@@ -87,9 +118,10 @@ function Register({ onClose, onSwitchToLogin }) {
 
           <button
             type="submit"
-            className="w-full py-3 bg-[#ff004f] text-white border-none rounded-lg font-bold cursor-pointer hover:bg-[#e60045] transition-colors duration-200"
+            disabled={loading}
+            className="w-full py-3 bg-[#ff004f] text-white border-none rounded-lg font-bold cursor-pointer hover:bg-[#e60045] transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            Daftar
+            {loading ? "Loading..." : "Daftar"}
           </button>
         </form>
 
