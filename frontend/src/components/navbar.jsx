@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
+import { useCart } from "../contexts/CartContext";
 
 function Navbar({ user, onLoginClick, onLogout, isAdmin, onAdminClick, onOrderStatusClick, onOrderHistoryClick, onCartClick }) {
+  const { cartCount } = useCart();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const menuRef = useRef(null);
 
@@ -175,7 +177,7 @@ function Navbar({ user, onLoginClick, onLogout, isAdmin, onAdminClick, onOrderSt
 
         <span
           className="flex items-center justify-center cursor-pointer hover:text-[#e11d48] transition-colors duration-300 relative"
-          onClick={user ? onCartClick : onLoginClick}
+          onClick={onCartClick}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -192,6 +194,11 @@ function Navbar({ user, onLoginClick, onLogout, isAdmin, onAdminClick, onOrderSt
             <circle cx="20" cy="21" r="1" />
             <path d="M1 1h4l2.6 13h11.4l2-8H6" />
           </svg>
+          {cartCount > 0 && (
+            <span className="absolute -top-1 -right-1 bg-[#e11d48] text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-medium">
+              {cartCount > 9 ? "9+" : cartCount}
+            </span>
+          )}
         </span>
       </div>
     </nav>

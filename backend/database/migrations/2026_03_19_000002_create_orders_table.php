@@ -12,7 +12,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('order_number')->unique();
-            $table->enum('status', ['pending', 'processing', 'shipped', 'delivered', 'cancelled'])->default('pending');
+            // Using new state machine status format for consistency
+            $table->enum('status', ['WAITING_PAYMENT', 'WAITING_PROCESSING', 'PROCESSED', 'READY_FOR_PICKUP', 'COMPLETED', 'CANCELLED'])->default('WAITING_PAYMENT');
             $table->decimal('total_amount', 10, 2);
             $table->string('shipping_address')->nullable();
             $table->string('phone')->nullable();

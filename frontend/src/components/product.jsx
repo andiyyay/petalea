@@ -1,4 +1,12 @@
+import { useCart } from "../contexts/CartContext";
+
 export default function ProductCard({ product }) {
+  const { addToCart } = useCart();
+
+  const handleAddToCart = () => {
+    addToCart(product);
+  };
+
   return (
     <div
       id={`product-${product.id}`}
@@ -16,7 +24,10 @@ export default function ProductCard({ product }) {
           Rp {product.price.toLocaleString("id-ID")}
         </p>
 
-        <button className="border-none bg-[#e11d48] text-white py-2.5 px-5 rounded-full cursor-pointer hover:bg-[#be123c] transition-colors duration-300">
+        <button
+          onClick={handleAddToCart}
+          className="border-none bg-[#e11d48] text-white py-2.5 px-5 rounded-full cursor-pointer hover:bg-[#be123c] transition-colors duration-300"
+        >
           Add to Cart
         </button>
       </div>
