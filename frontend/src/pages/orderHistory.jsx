@@ -2,8 +2,11 @@ import { useState, useEffect } from "react";
 import api from "../services/api";
 import { orderService, ORDER_STATES, ORDER_STATE_INFO } from "../services/orderService";
 import ProgressIndicator from "../components/ProgressIndicator";
+import { useCart } from "../contexts/CartContext";
 
 function OrderHistory({ onClose }) {
+  const { addToCart } = useCart();
+  const [notification, setNotification] = useState({ show: false, message: "", type: "" });
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
@@ -24,6 +27,28 @@ function OrderHistory({ onClose }) {
       console.error("Gagal memuat riwayat pesanan:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const showNotification = (message, type = "success") => {
+    setNotification({ show: true, message, type });
+    setTimeout(() => setNotification({ show: false, message: "", type: "" }), 3000);
+  };
+
+  const handleRestoreToCart = (order) => {
+    if (order && order.items) {
+      order.items.forEach((item) => {
+        const productForCart = {
+          id: item.product.id,
+          name: item.product.name,
+          price: item.product.price,
+          image: item.product.image_url || (item.product.image ? `/${item.product.image}` : null),
+        };
+        for (let i = 0; i < item.quantity; i++) {
+          addToCart(productForCart);
+        }
+      });
+      showNotification("Item berhasil dikembalikan ke keranjang", "success");
     }
   };
 
@@ -86,6 +111,49 @@ function OrderHistory({ onClose }) {
             </svg>
           </button>
         </div>
+
+        {/* Notification */}
+        {notification.show && (
+          <div
+            className={`mx-4 sm:mx-6 mt-4 p-3 rounded-lg ${
+              notification.type === "error"
+                ? "bg-red-100 text-red-800 border border-red-200"
+                : "bg-green-100 text-green-800 border border-green-200"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              {notification.type === "error" ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="m15 9-6 6" />
+                  <path d="m9 9 6 6" />
+                </svg>
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+              )}
+              <span className="text-sm font-medium">{notification.message}</span>
+            </div>
+          </div>
+        )}
 
         {/* Filter tabs */}
         <div className="flex gap-2 px-4 sm:px-6 py-4 border-b overflow-x-auto scrollbar-hide">
@@ -280,18 +348,14 @@ function OrderHistory({ onClose }) {
                                   key={item.id}
                                   className="flex items-center gap-3 p-2 bg-gray-50 rounded-lg"
                                 >
-                                  <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center shadow-sm">
-                                    {item.product?.image_url ? (
-                                      <img
-                                        src={item.product.image_url}
-                                        alt={item.product.name}
-                                        className="w-full h-full object-cover rounded-lg"
-                                      />
-                                    ) : (
-                                      <span className="text-3xl">
-                                        {item.product?.image || "🌸"}
-                                      </span>
-                                    )}
+                                  <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center shadow-sm overflow-hidden">
+                                    <img
+                                      src={item.product?.image_url || (item.product?.image ? `/${item.product.image}` : null)}
+                                      alt={item.product?.name}
+                                      className="w-full h-full object-cover rounded-lg"
+                                      onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }}
+                                    />
+                                    <span className="text-3xl" style={{ display: 'none' }}>🌸</span>
                                   </div>
                                   <div className="flex-1">
                                     <p className="font-medium text-gray-800">
@@ -329,10 +393,31 @@ function OrderHistory({ onClose }) {
                               </div>
                             </div>
 
+                            {/* Payment Button for WAITING_PAYMENT */}
+                            {order.status === ORDER_STATES.WAITING_PAYMENT && order.payment_url && (
+                              <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                                <div className="flex items-center gap-2">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <polyline points="12 6 12 12 16 14" />
+                                  </svg>
+                                  <p className="text-sm text-amber-800">Selesaikan pembayaran Anda sebelum kadaluarsa.</p>
+                                </div>
+                                <a
+                                  href={order.payment_url}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="px-4 py-2 bg-[#e91e63] text-white hover:bg-pink-700 rounded-lg transition-colors font-medium text-sm whitespace-nowrap shadow-sm w-full sm:w-auto text-center"
+                                >
+                                  Bayar Sekarang
+                                </a>
+                              </div>
+                            )}
+
                             {/* Cancel Reason */}
-                            {order.status === ORDER_STATES.CANCELLED &&
-                              order.cancelled_reason && (
-                              <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                            {order.status === ORDER_STATES.CANCELLED && (
+                              <div className="mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-3 bg-red-50 border border-red-200 rounded-lg">
                                 <div className="flex items-start gap-2">
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -344,7 +429,7 @@ function OrderHistory({ onClose }) {
                                     strokeWidth="2"
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
-                                    className="mt-0.5"
+                                    className="mt-0.5 min-w-[16px]"
                                   >
                                     <circle cx="12" cy="12" r="10" />
                                     <path d="m15 9-6 6" />
@@ -352,13 +437,22 @@ function OrderHistory({ onClose }) {
                                   </svg>
                                   <div>
                                     <p className="text-sm font-medium text-red-800">
-                                      Alasan Pembatalan:
+                                      Dibatalkan
                                     </p>
                                     <p className="text-sm text-red-700">
-                                      {order.cancelled_reason}
+                                      {order.cancelled_reason || "Pesanan telah dibatalkan."}
                                     </p>
                                   </div>
                                 </div>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleRestoreToCart(order);
+                                  }}
+                                  className="px-4 py-2 bg-white border border-red-200 text-red-700 hover:bg-red-100 rounded-lg transition-colors font-medium text-sm whitespace-nowrap shadow-sm w-full sm:w-auto"
+                                >
+                                  Pesan Ulang
+                                </button>
                               </div>
                             )}
                           </div>

@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import api from "../services/api";
 import { orderService, ORDER_STATES } from "../services/orderService";
 import ProgressIndicator from "../components/ProgressIndicator";
+import { useCart } from "../contexts/CartContext";
 
 function OrderStatus({ onClose }) {
+  const { addToCart } = useCart();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [cancellingOrderId, setCancellingOrderId] = useState(null);
@@ -60,6 +62,23 @@ function OrderStatus({ onClose }) {
         err.response?.data?.message || "Gagal membatalkan pesanan",
         "error"
       );
+    }
+  };
+
+  const handleRestoreToCart = (order) => {
+    if (order && order.items) {
+      order.items.forEach((item) => {
+        const productForCart = {
+          id: item.product.id,
+          name: item.product.name,
+          price: item.product.price,
+          image: item.product.image_url || (item.product.image ? `/${item.product.image}` : null),
+        };
+        for (let i = 0; i < item.quantity; i++) {
+          addToCart(productForCart);
+        }
+      });
+      showNotification("Item berhasil dikembalikan ke keranjang", "success");
     }
   };
 
@@ -217,18 +236,14 @@ function OrderStatus({ onClose }) {
                           key={item.id}
                           className="flex items-center gap-3 text-sm"
                         >
-                          <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center shadow-sm">
-                            {item.product?.image_url ? (
-                              <img
-                                src={item.product.image_url}
-                                alt={item.product.name}
-                                className="w-full h-full object-cover rounded-lg"
-                              />
-                            ) : (
-                              <span className="text-2xl">
-                                {item.product?.image || "🌸"}
-                              </span>
-                            )}
+                          <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center shadow-sm overflow-hidden">
+                            <img
+                              src={item.product?.image_url || (item.product?.image ? `/${item.product.image}` : null)}
+                              alt={item.product?.name}
+                              className="w-full h-full object-cover rounded-lg"
+                              onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }}
+                            />
+                            <span className="text-2xl" style={{ display: 'none' }}>🌸</span>
                           </div>
                           <div className="flex-1">
                             <p className="font-medium text-gray-800">
@@ -251,27 +266,49 @@ function OrderStatus({ onClose }) {
                         Rp {order.total_amount?.toLocaleString("id-ID")}
                       </p>
                     </div>
-                    {canCancel(order) && (
-                      <button
-                        onClick={() => handleCancelClick(order.id)}
-                        className="px-4 py-2 bg-red-100 text-red-700 hover:bg-red-200 rounded-lg transition-colors font-medium text-sm flex items-center gap-1"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
+                    <div className="flex gap-2">
+                      {order.status === ORDER_STATES.WAITING_PAYMENT && order.payment_url && (
+                        <a
+                          href={order.payment_url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="px-4 py-2 bg-[#e91e63] text-white hover:bg-pink-700 rounded-lg transition-colors font-medium text-sm flex items-center gap-1 shadow-sm"
                         >
-                          <circle cx="12" cy="12" r="10" />
-                          <path d="m15 9-6 6" />
-                          <path d="m9 9 6 6" />
-                        </svg>
-                        Batalkan
-                      </button>
-                    )}
+                          Bayar Sekarang
+                        </a>
+                      )}
+                      
+                      {order.status === ORDER_STATES.CANCELLED && (
+                        <button
+                          onClick={() => handleRestoreToCart(order)}
+                          className="px-4 py-2 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-lg transition-colors font-medium text-sm flex items-center gap-1"
+                        >
+                          Pesan Ulang
+                        </button>
+                      )}
+
+                      {canCancel(order) && (
+                        <button
+                          onClick={() => handleCancelClick(order.id)}
+                          className="px-4 py-2 bg-red-100 text-red-700 hover:bg-red-200 rounded-lg transition-colors font-medium text-sm flex items-center gap-1"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                          >
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="m15 9-6 6" />
+                            <path d="m9 9 6 6" />
+                          </svg>
+                          Batalkan
+                        </button>
+                      )}
+                    </div>
                   </div>
 
                   {/* Info for non-cancelled orders */}
@@ -296,9 +333,16 @@ function OrderStatus({ onClose }) {
                         </svg>
                         <div className="text-sm">
                           {order.status === ORDER_STATES.WAITING_PAYMENT && (
-                            <p className="text-blue-800">
-                              Silakan selesaikan pembayaran Anda. Pesanan akan diproses setelah pembayaran dikonfirmasi.
-                            </p>
+                            <div className="text-blue-800">
+                              <p className="mb-1">
+                                Silakan selesaikan pembayaran Anda. Pesanan akan diproses setelah pembayaran dikonfirmasi.
+                              </p>
+                              {order.payment_method && (
+                                <p className="font-medium text-sm mt-1 border-t border-blue-200 pt-1">
+                                  Metode: {order.payment_method.toUpperCase()}
+                                </p>
+                              )}
+                            </div>
                           )}
                           {order.status === ORDER_STATES.WAITING_PROCESSING && (
                             <p className="text-blue-800">
