@@ -16,7 +16,7 @@ class XenditWebhookSignature
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $webhookToken = config('services.xendit.webhook_token') ?? env('XENDIT_WEBHOOK_TOKEN');
+        $webhookToken = trim((string) (config('services.xendit.webhook_token') ?? env('XENDIT_WEBHOOK_TOKEN') ?? ''));
 
         // Check if webhook token is configured
         if (empty($webhookToken)) {
@@ -28,11 +28,18 @@ class XenditWebhookSignature
             ], 500);
         }
 
-        // Get the webhook token from request headers
-        $xenditToken = $request->header('X-Callback-Token');
+        // Read the callback token from common header sources to avoid server-specific casing issues.
+        $xenditToken = trim((string) (
+            $request->header('X-Callback-Token')
+            ?? $request->header('x-callback-token')
+            ?? $request->server('HTTP_X_CALLBACK_TOKEN')
+            ?? ''
+        ));
 
         if (empty($xenditToken)) {
-            Log::warning('Xendit webhook received without callback token');
+            Log::warning('Xendit webhook received without callback token', [
+                'header_names' => array_keys($request->headers->all()),
+            ]);
 
             return response()->json([
                 'success' => false,
@@ -43,7 +50,14 @@ class XenditWebhookSignature
         // Verify the webhook token
         if (!hash_equals($webhookToken, $xenditToken)) {
             Log::warning('Xendit webhook received with invalid token', [
-                'received' => $xenditToken,
+                'received_token_length' => strlen($xenditToken),
+                'expected_token_length' => strlen($webhookToken),
+                'has_whitespace_issue' => $xenditToken !== (string) (
+                    $request->header('X-Callback-Token')
+                    ?? $request->header('x-callback-token')
+                    ?? $request->server('HTTP_X_CALLBACK_TOKEN')
+                    ?? ''
+                ),
             ]);
 
             return response()->json([
