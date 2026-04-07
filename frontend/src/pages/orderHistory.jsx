@@ -350,7 +350,7 @@ function OrderHistory({ onClose }) {
                                 >
                                   <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center shadow-sm overflow-hidden">
                                     <img
-                                      src={item.product?.image_url || (item.product?.image ? `/${item.product.image}` : null)}
+                                      src={item.product?.image_url || item.product?.image}
                                       alt={item.product?.name}
                                       className="w-full h-full object-cover rounded-lg"
                                       onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }}
