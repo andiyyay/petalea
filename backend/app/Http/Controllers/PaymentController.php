@@ -53,6 +53,16 @@ class PaymentController extends Controller
 
             foreach ($request->items as $item) {
                 $product = Product::findOrFail($item['product_id']);
+
+                // Validate stock availability
+                if ($product->stock !== null && $product->stock < $item['quantity']) {
+                    DB::rollBack();
+                    return response()->json([
+                        'success' => false,
+                        'message' => "Stok tidak cukup untuk {$product->name}. Tersisa: {$product->stock}",
+                    ], 422);
+                }
+
                 $subtotal = $product->price * $item['quantity'];
                 $totalAmount += $subtotal;
 
@@ -77,7 +87,7 @@ class PaymentController extends Controller
                 'shipping_cost' => 0,
             ]);
 
-            // Create order items
+            // Create order items and decrement stock
             foreach ($items as $item) {
                 OrderItem::create([
                     'order_id' => $order->id,
@@ -86,6 +96,12 @@ class PaymentController extends Controller
                     'price' => $item['price'],
                     'subtotal' => $item['subtotal'],
                 ]);
+
+                // Decrement product stock
+                $product = Product::find($item['product_id']);
+                if ($product && $product->stock !== null) {
+                    $product->decrement('stock', $item['quantity']);
+                }
             }
 
             // Create invoice with Xendit
@@ -333,6 +349,14 @@ class PaymentController extends Controller
                         $updateData['status'] = OrderStateMachine::STATE_CANCELLED;
                         $updateData['cancelled_by'] = 'system';
                         $updateData['cancelled_reason'] = $reason;
+
+                        // Restore product stock for cancelled orders
+                        foreach ($order->items as $item) {
+                            $product = Product::find($item->product_id);
+                            if ($product && $product->stock !== null) {
+                                $product->increment('stock', $item->quantity);
+                            }
+                        }
 
                         Log::info('Order status updated: WAITING_PAYMENT -> CANCELLED (payment expired/failed)', [
                             'order_id' => $order->id,

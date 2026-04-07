@@ -18,6 +18,7 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|integer|min:0',
+            'stock' => 'required|integer|min:0',
             'image' => 'required|image|mimes:jpeg,jpg,png|max:2048',
         ]);
 
@@ -26,6 +27,7 @@ class ProductController extends Controller
         $product = Product::create([
             'name' => $request->name,
             'price' => $request->price,
+            'stock' => $request->stock,
             'image' => '/storage/' . $imagePath,
         ]);
 
@@ -45,12 +47,14 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|integer|min:0',
+            'stock' => 'required|integer|min:0',
             'image' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
         ]);
 
         $data = [
             'name' => $request->name,
             'price' => $request->price,
+            'stock' => $request->stock,
         ];
 
         if ($request->hasFile('image')) {

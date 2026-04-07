@@ -47,7 +47,6 @@ const PAYMENT_METHODS = {
       </svg>
     ),
     methods: [
-      { id: "gopay", name: "GoPay", color: "bg-green-500" },
       { id: "ovo", name: "OVO", color: "bg-purple-500" },
       { id: "dana", name: "DANA", color: "bg-blue-500" },
       { id: "shopeepay", name: "ShopeePay", color: "bg-orange-500" },

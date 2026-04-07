@@ -17,6 +17,7 @@ function Admin({ user, onClose }) {
   const [productFormData, setProductFormData] = useState({
     name: "",
     price: "",
+    stock: "",
     image: null,
   });
 
@@ -85,6 +86,7 @@ function Admin({ user, onClose }) {
     const data = new FormData();
     data.append("name", productFormData.name);
     data.append("price", productFormData.price);
+    data.append("stock", productFormData.stock);
     if (productFormData.image) {
       data.append("image", productFormData.image);
     }
@@ -110,6 +112,7 @@ function Admin({ user, onClose }) {
     setProductFormData({
       name: product.name,
       price: product.price,
+      stock: product.stock ?? "",
       image: null,
     });
     setShowProductForm(true);
@@ -128,7 +131,7 @@ function Admin({ user, onClose }) {
   };
 
   const resetProductForm = () => {
-    setProductFormData({ name: "", price: "", image: null });
+    setProductFormData({ name: "", price: "", stock: "", image: null });
     setEditingProduct(null);
   };
 
@@ -196,7 +199,7 @@ function Admin({ user, onClose }) {
 
   const getFilteredOrders = () => {
     if (orderFilter === "all") return orders;
-    return orders.filter((o) => o.state === orderFilter);
+    return orders.filter((o) => o.status === orderFilter);
   };
 
   if (loading && activeTab === "products" && products.length === 0) {
@@ -317,6 +320,7 @@ function Admin({ user, onClose }) {
                           <th className="text-left py-3 px-2 sm:px-4">Gambar</th>
                           <th className="text-left py-3 px-2 sm:px-4">Nama</th>
                           <th className="text-left py-3 px-2 sm:px-4">Harga</th>
+                          <th className="text-left py-3 px-2 sm:px-4">Stok</th>
                           <th className="text-center py-3 px-2 sm:px-4">Aksi</th>
                         </tr>
                       </thead>
@@ -333,6 +337,17 @@ function Admin({ user, onClose }) {
                             <td className="py-3 px-2 sm:px-4">{product.name}</td>
                             <td className="py-3 px-2 sm:px-4">
                               Rp {product.price.toLocaleString("id-ID")}
+                            </td>
+                            <td className="py-3 px-2 sm:px-4">
+                              <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                                product.stock > 10
+                                  ? "bg-green-100 text-green-800"
+                                  : product.stock > 0
+                                  ? "bg-yellow-100 text-yellow-800"
+                                  : "bg-red-100 text-red-800"
+                              }`}>
+                                {product.stock ?? 0}
+                              </span>
                             </td>
                             <td className="py-3 px-2 sm:px-4 text-center">
                               <button
@@ -395,6 +410,20 @@ function Admin({ user, onClose }) {
                       value={productFormData.price}
                       onChange={handleProductInputChange}
                       required
+                    />
+
+                    <label className="block mb-2 font-semibold text-gray-700">
+                      Stok
+                    </label>
+                    <input
+                      className="w-full p-3 rounded-xl border border-gray-300 mb-4 outline-none focus:border-[#e91e63] transition-colors"
+                      type="number"
+                      name="stock"
+                      placeholder="Contoh: 50"
+                      value={productFormData.stock}
+                      onChange={handleProductInputChange}
+                      required
+                      min="0"
                     />
 
                     <label className="block mb-2 font-semibold text-gray-700">
@@ -583,7 +612,21 @@ function Admin({ user, onClose }) {
                       selectedOrder.status
                     )}`}
                   >
-                    {orderService.getStatusIcon(selectedOrder.status)}
+                    {orderService.getStatusIconType(selectedOrder.status) === "clock" && (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
+                    )}
+                    {orderService.getStatusIconType(selectedOrder.status) === "hourglass" && (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 22h14" /><path d="M5 2h14" /><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22" /><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2" /></svg>
+                    )}
+                    {orderService.getStatusIconType(selectedOrder.status) === "package" && (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m7.5 4.27 9 5.15" /><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" /><path d="m3.3 7 8.7 5 8.7-5" /><path d="M12 22v-9" /></svg>
+                    )}
+                    {orderService.getStatusIconType(selectedOrder.status) === "checkCircle" && (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>
+                    )}
+                    {orderService.getStatusIconType(selectedOrder.status) === "xCircle" && (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="m15 9-6 6" /><path d="m9 9 6 6" /></svg>
+                    )}
                     {orderService.getStatusLabel(selectedOrder.status)}
                   </span>
                 </div>

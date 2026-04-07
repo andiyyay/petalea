@@ -531,6 +531,14 @@ class OrderController extends Controller
                 'cancelled_reason' => $reason,
             ]);
 
+            // Restore product stock for cancelled orders
+            foreach ($order->items as $item) {
+                $product = Product::find($item->product_id);
+                if ($product && $product->stock !== null) {
+                    $product->increment('stock', $item->quantity);
+                }
+            }
+
             // Log state transition
             Log::info('Order cancelled', [
                 'order_id' => $order->id,
@@ -584,7 +592,7 @@ class OrderController extends Controller
             $query->whereDate('created_at', '<=', $request->input('to_date'));
         }
 
-        $orders = $query->orderBy('created_at', 'desc')->paginate($request->input('per_page', 20));
+        $orders = $query->orderBy('created_at', 'desc')->get();
 
         return response()->json([
             'success' => true,

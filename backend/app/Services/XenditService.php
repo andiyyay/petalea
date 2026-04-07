@@ -27,32 +27,32 @@ class XenditService
     ];
 
     /**
-     * Map frontend method IDs to Xendit payment categories
+     * Map frontend method IDs directly to Xendit payment method codes.
+     * Xendit Invoice API requires specific channel codes, not category names.
      */
     public const METHOD_MAP = [
         // QRIS
         'qris' => 'QRIS',
 
         // Virtual Accounts
-        'bca_va' => 'VIRTUAL_ACCOUNT',
-        'mandiri_va' => 'VIRTUAL_ACCOUNT',
-        'bni_va' => 'VIRTUAL_ACCOUNT',
-        'bri_va' => 'VIRTUAL_ACCOUNT',
-        'permata_va' => 'VIRTUAL_ACCOUNT',
+        'bca_va' => 'BANK_TRANSFER',
+        'mandiri_va' => 'MANDIRI',
+        'bni_va' => 'BNI',
+        'bri_va' => 'BRI',
+        'permata_va' => 'PERMATA',
 
-        // E-Wallets
-        'gopay' => 'EWALLET',
-        'ovo' => 'EWALLET',
-        'dana' => 'EWALLET',
-        'shopeepay' => 'EWALLET',
-        'linkaja' => 'EWALLET',
+        // E-Wallets (specific channel codes required by Xendit)
+        'ovo' => 'OVO',
+        'dana' => 'DANA',
+        'shopeepay' => 'SHOPEEPAY',
+        'linkaja' => 'LINKAJA',
 
         // Credit Card
         'credit_card' => 'CREDIT_CARD',
 
-        // Retail Outlets
-        'alfamart' => 'RETAIL_OUTLET',
-        'indomaret' => 'RETAIL_OUTLET',
+        // Retail Outlets (specific channel codes required by Xendit)
+        'alfamart' => 'ALFAMART',
+        'indomaret' => 'INDOMARET',
     ];
 
     /**
@@ -192,26 +192,18 @@ class XenditService
     }
 
     /**
-     * Map application payment method to Xendit payment method code
+     * Map application payment method to Xendit payment method code.
+     * Returns the specific Xendit-accepted payment method string.
      */
     protected function mapPaymentMethodToXendit(string $method): string
     {
-        // First check if it's a specific method ID from frontend
+        // Direct mapping from METHOD_MAP (already contains Xendit-accepted values)
         if (isset(self::METHOD_MAP[$method])) {
-            $category = self::METHOD_MAP[$method];
-        } else {
-            $category = strtoupper($method);
+            return self::METHOD_MAP[$method];
         }
 
-        $map = [
-            'VIRTUAL_ACCOUNT' => 'BANK_TRANSFER',
-            'EWALLET' => 'EWALLET',
-            'QRIS' => 'QRIS',
-            'CREDIT_CARD' => 'CREDIT_CARD',
-            'RETAIL_OUTLET' => 'RETAIL_OUTLET',
-        ];
-
-        return $map[$category] ?? 'BANK_TRANSFER';
+        // Fallback: uppercase the method name
+        return strtoupper($method);
     }
 
     /**
