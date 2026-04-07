@@ -119,8 +119,8 @@ export const orderService = {
   // Admin: Transition order to PROCESSED
   transitionToProcessed: async (orderId) => {
     const config = getAuthHeaders();
-    const response = await api.post(
-      `/admin/orders/${orderId}/processed`,
+    const response = await api.put(
+      `/admin/orders/${orderId}/process`,
       {},
       config
     );
@@ -130,7 +130,7 @@ export const orderService = {
   // Admin: Transition order to READY_FOR_PICKUP
   transitionToReadyForPickup: async (orderId) => {
     const config = getAuthHeaders();
-    const response = await api.post(
+    const response = await api.put(
       `/admin/orders/${orderId}/ready`,
       {},
       config
@@ -141,7 +141,7 @@ export const orderService = {
   // Admin: Transition order to COMPLETED
   transitionToCompleted: async (orderId) => {
     const config = getAuthHeaders();
-    const response = await api.post(
+    const response = await api.put(
       `/admin/orders/${orderId}/complete`,
       {},
       config
@@ -152,7 +152,7 @@ export const orderService = {
   // Admin: Cancel order
   cancelOrder: async (orderId, cancelledBy, reason) => {
     const config = getAuthHeaders();
-    const response = await api.post(
+    const response = await api.put(
       `/admin/orders/${orderId}/cancel`,
       { cancelled_by: cancelledBy, reason },
       config

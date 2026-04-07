@@ -570,7 +570,7 @@ function Admin({ user, onClose }) {
 
       {/* Order Detail Modal */}
       {showOrderDetail && selectedOrder && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[10001] p-4">
           <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col animate-in fade-in-50 zoom-in-95">
             {/* Header */}
             <div className="flex items-center justify-between p-4 sm:p-6 border-b">
@@ -671,16 +671,18 @@ function Admin({ user, onClose }) {
                 <div className="bg-gray-50 rounded-xl p-4 space-y-3">
                   {selectedOrder.items?.map((item) => (
                     <div key={item.id} className="flex items-center gap-3">
-                      <div className="w-14 h-14 bg-white rounded-lg flex items-center justify-center shadow-sm">
-                        {item.product?.image_url ? (
+                      <div className="w-14 h-14 bg-white rounded-lg flex items-center justify-center shadow-sm overflow-hidden">
+                        {(item.product?.image_url || item.product?.image) ? (
                           <img
-                            src={item.product.image_url}
+                            src={item.product.image_url || item.product.image}
                             alt={item.product.name}
                             className="w-full h-full object-cover rounded-lg"
+                            onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }}
                           />
                         ) : (
-                          <span className="text-2xl">{item.product?.image || "🌸"}</span>
+                          <span className="text-2xl">🌸</span>
                         )}
+                        <span className="text-2xl" style={{ display: 'none' }}>🌸</span>
                       </div>
                       <div className="flex-1">
                         <p className="font-medium text-gray-800">{item.product?.name}</p>
@@ -834,7 +836,7 @@ function Admin({ user, onClose }) {
 
       {/* Cancel Order Modal */}
       {showCancelModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[110] p-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[10002] p-4">
           <div className="bg-white rounded-2xl w-full max-w-md p-6 animate-in fade-in-50 zoom-in-95">
             <h3 className="text-xl font-bold text-gray-800 mb-2">Batalkan Pesanan</h3>
             <p className="text-gray-600 text-sm mb-4">

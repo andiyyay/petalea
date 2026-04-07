@@ -49,10 +49,15 @@ class OrderController extends Controller
      */
     public function show(Request $request, int $id): JsonResponse
     {
-        $order = $request->user()
-            ->orders()
-            ->with('items.product')
-            ->findOrFail($id);
+        // Admin can view any order, regular user only their own
+        if ($request->user()->is_admin) {
+            $order = Order::with(['items.product', 'user'])->findOrFail($id);
+        } else {
+            $order = $request->user()
+                ->orders()
+                ->with('items.product')
+                ->findOrFail($id);
+        }
 
         return response()->json([
             'success' => true,

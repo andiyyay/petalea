@@ -125,10 +125,9 @@ class XenditService
                 'shipping_type' => 'SELF_PICKUP',
             ]);
 
-            // Add payment method specific configuration
-            if ($paymentMethod !== 'ALL') {
-                $invoiceRequest->setPaymentMethods([$this->mapPaymentMethodToXendit($paymentMethod)]);
-            }
+            // Note: We don't restrict payment_methods on the Xendit invoice.
+            // Xendit will display all methods activated for the account on the hosted payment page.
+            // The user's selected method is stored in our order for reference only.
 
             $invoice = $this->invoiceApi->createInvoice($invoiceRequest);
 
